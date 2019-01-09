@@ -412,7 +412,7 @@ instant_ores.register_crystal = function(crystal)
 end
 
 -- test-ores (WARNING: _VERY_ UNBALANCED)
-dofile(minetest.get_modpath("instant_ores").."/examples.lua")
+--dofile(minetest.get_modpath("instant_ores").."/examples.lua")
   
   
   
