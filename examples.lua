@@ -7,9 +7,8 @@ Default image structure (reference for texture pack makers):
 	crystal ore: default_stone.png + mineral_1_base.png + (mineral_1.png^[colorize:(color))
 	crystal/crystal_shard/metal_lump: (crystal/crystal_shard/metal_lump)_base.png + ((crystal/crystal_shard/metal_lump).png^[colorize:(color))
 	
-	NOTE: For images that are colorized, I HIGHLY recommend sharpening the brightness/contrast 
-	of the default steel tools, as the colorization can flatten it out quite a bit.
-	Krita is an excelent tool for this.
+	NOTE: For images that are colorized, I HIGHLY recommend sharpening the brightness/contrast, 
+	as the colorization can flatten it out quite a bit. Krita is an excelent tool for this.
 ]]
 
 
