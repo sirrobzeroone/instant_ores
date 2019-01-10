@@ -88,7 +88,7 @@ instant_ores.register_crystal({
 --[[
 Properties unique to crystal:
 	shard_image (optional): Optional custom sprite for the shard. Will not be automatically colorized if specified.
-	crystal imag (optional): Optional custom sprite for the crystal. Will not be automatically colorized if specified.
+	crystal image (optional): Optional custom sprite for the crystal. Will not be automatically colorized if specified.
 ]]
 
 instant_ores.register_metal({
