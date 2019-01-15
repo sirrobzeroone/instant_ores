@@ -45,8 +45,8 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 	local durability = optional_durability or (level * 40)
 	if level < 1 then level = 1 end
 	local speed = optional_speed or level
-	if speed > 2 then
-		speed = speed*speed
+	if speed <= 2 then
+		speed = speed/level
 	elseif speed < 0.001 then 
 		speed = 0.001 
 	end
@@ -84,7 +84,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			full_punch_interval = 2.67/(optional_speed or level),
 			max_drop_level=level,
 			groupcaps={
-				cracky = {uses=durability, times=gcap.cracky},
+				cracky = {uses=durability, maxlevel=level, times=gcap.cracky},
 			},
 			damage_groups = {fleshy=level+1},
 		},
@@ -109,7 +109,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			full_punch_interval = 3/(optional_speed or level),
 			max_drop_level=level,
 			groupcaps={
-				crumbly = {uses=durability, times=gcap.crumbly},
+				crumbly = {uses=durability, maxlevel=level, times=gcap.crumbly},
 			},
 			damage_groups = {fleshy=level},
 		},
@@ -133,7 +133,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			full_punch_interval = 2.67/(optional_speed or level),
 			max_drop_level=level,
 			groupcaps={
-				choppy={uses=durability, times=gcap.choppy},
+				choppy={uses=durability, maxlevel=level, times=gcap.choppy},
 			},
 			damage_groups = {fleshy=level+2},
 		},
@@ -157,7 +157,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			full_punch_interval = 2.25/(optional_speed or level),
 			max_drop_level=level,
 			groupcaps={
-				snappy={uses=durability, times=gcap.snappy},
+				snappy={uses=durability, maxlevel=level, times=gcap.snappy},
 			},
 			damage_groups = {fleshy=level+3},
 		},
