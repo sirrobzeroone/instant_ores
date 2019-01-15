@@ -45,10 +45,13 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 	local durability = optional_durability or (level * 40)
 	if level < 1 then level = 1 end
 	local speed = optional_speed or level
-	if speed <= 2 then
-		speed = speed/level
+	
+	if speed > 2 then
+		speed = speed*speed/level -- Correct for maxlevel having an effect on speed
 	elseif speed < 0.001 then 
 		speed = 0.001 
+	else
+		speed = speed/level
 	end
 	
 	local gcap = {
