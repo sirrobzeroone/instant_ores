@@ -182,7 +182,8 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			description = desc.." Hoe",
 			inventory_image = "tool_base.png^tool_hoe_base.png^(tool_hoe.png^[colorize:"..color..")",
 			max_uses = durability,
-			material = ingredient
+			material = ingredient,
+			groups = {tooltype_hoe=1},
 		})
 	end
 
