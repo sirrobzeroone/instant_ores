@@ -41,8 +41,9 @@ instant_ores.register_gen_ore = function(node, rarity, ymax, ymax_deep)
 	
 end
 
-instant_ores.register_toolset = function(mod, name, desc, color, level, ingredient, --[[ Parameters after this can be omitted ]] optional_durability, optional_speed)
+instant_ores.register_toolset = function(mod, name, desc, color, level, ingredient, --[[ Parameters after this can be omitted ]] optional_durability, optional_speed, infinite_use)
 	local durability = optional_durability or (level * 40)
+	local afteruse = (infinite_use and (function() end))
 	if level < 1 then level = 1 end
 	local speed = optional_speed or level
 	
@@ -93,6 +94,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_pick = 1},
 		sound = {breaks = "default_tool_breaks"},
+		after_use = afteruse,
 	})
 	
 	minetest.register_craft({
@@ -118,6 +120,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_shovel = 1},
 		sound = {breaks = "default_tool_breaks"},
+		after_use = afteruse,
 	})
 
 	minetest.register_craft({
@@ -142,6 +145,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_axe = 1},
 		sound = {breaks = "default_tool_breaks"},
+		after_use = afteruse,
 	})
 
 	minetest.register_craft({
@@ -164,6 +168,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			},
 			damage_groups = {fleshy=level+3},
 		},
+		after_use = afteruse,
 		groups = {tooltype_sword = 1},
 		sound = {breaks = "default_tool_breaks"},
 	})
@@ -184,6 +189,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			max_uses = durability,
 			material = ingredient,
 			groups = {tooltype_hoe=1},
+			after_use = afteruse,
 		})
 	end
 
@@ -297,7 +303,8 @@ instant_ores.register_metal = function(metal)
 		metal.power, -- For reference, 2 is based on the power of stone tools.
 		metal.tool_ingredient, --Must be a valid item
 		metal.durability, -- can be nil, will be calculated from power if omitted.
-		metal.speed
+		metal.speed,
+		metal.infinite_uses
 	)
 end
 
@@ -411,7 +418,8 @@ instant_ores.register_crystal = function(crystal)
 		crystal.power, -- For reference, 2 is based on the power of stone tools.
 		crystal.tool_ingredient, --Must be a valid item
 		crystal.durability, -- can be nil, will be calculated from power if omitted.
-		crystal.speed
+		crystal.speed,
+		crystal.infinite_uses
 	)
 end
 
