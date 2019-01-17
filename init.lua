@@ -43,7 +43,13 @@ end
 
 instant_ores.register_toolset = function(mod, name, desc, color, level, ingredient, --[[ Parameters after this can be omitted ]] optional_durability, optional_speed, infinite_use)
 	local durability = optional_durability or (level * 40)
-	local afteruse = (infinite_use and (function() end))
+	local maketool = infinite_use and 
+		function(name, def)
+			def.stack_max = 1
+			def.after_use = function() end
+			minetest.register_craftitem(name, def)
+		end
+	or minetest.register_tool
 	if level < 1 then level = 1 end
 	local speed = optional_speed or level
 	
@@ -81,7 +87,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		end
 	end
 	
-	minetest.register_tool(":"..mod..":pick_"..name, {
+	maketool(":"..mod..":pick_"..name, {
 		description = desc.." Pickaxe",
 		inventory_image = "tool_base.png^tool_pick_base.png^(tool_pick.png^[colorize:"..color..")",
 		tool_capabilities = {
@@ -94,7 +100,6 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_pick = 1},
 		sound = {breaks = "default_tool_breaks"},
-		after_use = afteruse,
 	})
 	
 	minetest.register_craft({
@@ -106,7 +111,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		}	
 	})
 
-	minetest.register_tool(":"..mod..":shovel_"..name, {
+	maketool(":"..mod..":shovel_"..name, {
 		description = desc.." Shovel",
 		inventory_image = "tool_base.png^tool_shovel_base.png^(tool_shovel.png^[colorize:"..color..")",
 		wield_image = "tool_base.png^tool_shovel_base.png^(tool_shovel.png^[colorize:"..color..")^[transformR90",
@@ -120,7 +125,6 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_shovel = 1},
 		sound = {breaks = "default_tool_breaks"},
-		after_use = afteruse,
 	})
 
 	minetest.register_craft({
@@ -132,7 +136,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		}	
 	})
 
-	minetest.register_tool(":"..mod..":axe_"..name, {
+	maketool(":"..mod..":axe_"..name, {
 		description = desc.." Axe",
 		inventory_image = "tool_base.png^tool_axe_base.png^(tool_axe.png^[colorize:"..color..")",
 		tool_capabilities = {
@@ -145,7 +149,6 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_axe = 1},
 		sound = {breaks = "default_tool_breaks"},
-		after_use = afteruse,
 	})
 
 	minetest.register_craft({
@@ -157,7 +160,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		}	
 	})
 
-	minetest.register_tool(":"..mod..":sword_"..name, {
+	maketool(":"..mod..":sword_"..name, {
 		description = desc.." Sword",
 		inventory_image = "tool_base.png^tool_sword_base.png^(tool_sword.png^[colorize:"..color..")",
 		tool_capabilities = {
@@ -168,7 +171,6 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			},
 			damage_groups = {fleshy=level+3},
 		},
-		after_use = afteruse,
 		groups = {tooltype_sword = 1},
 		sound = {breaks = "default_tool_breaks"},
 	})
@@ -189,7 +191,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			max_uses = durability,
 			material = ingredient,
 			groups = {tooltype_hoe=1},
-			after_use = afteruse,
+			after_use = infinite_use and (function() end),
 		})
 	end
 
