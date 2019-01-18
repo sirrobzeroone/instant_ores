@@ -36,6 +36,8 @@ Properties shared by metal and crystal:
 		Depth and rarity can be omitted if this is true.
 		THIS WILL NOT REGISTER A RECIPE FOR YOU.
 	
+	infinite_uses: Tools don't break.
+	
 	durability: Approximately how durable the tools are (this doesn't seem to be 1-to-1).
 		Will default to 40*power
 	
