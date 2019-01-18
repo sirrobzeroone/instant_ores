@@ -40,6 +40,7 @@ Properties shared by metal and crystal:
 	
 	durability: Approximately how durable the tools are (this doesn't seem to be 1-to-1).
 		Will default to 40*power
+		Note: Has no effect if affter_use is set.
 	
 	hardness (optional): Optional reversed nodegroup cracky of the ore and block, (1 = (cracky=3), 2 = (cracky=2), 3+ = (cracky=1)). 
 		Will default to one less than power.

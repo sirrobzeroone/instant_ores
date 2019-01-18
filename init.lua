@@ -42,14 +42,46 @@ instant_ores.register_gen_ore = function(node, rarity, ymax, ymax_deep)
 end
 
 instant_ores.register_toolset = function(mod, name, desc, color, level, ingredient, --[[ Parameters after this can be omitted ]] optional_durability, optional_speed, infinite_use)
-	local durability = optional_durability or (level * 40)
+	local durability = optional_durability or (40*level)
+	local afteruse = infinite_use and (function() end) or (
+		function(itemstack, user, node) 
+			-- Use this hack instead of the insane default which is impossible to work with.
+			
+			local tool = itemstack:get_tool_capabilities()
+			local ndef = minetest.registered_nodes[node.name]
+			
+			if not (ndef and tool) then return end
+			
+			local wear = 0
+			
+			if ndef.groups.cracky and tool.groupcaps.cracky then
+				wear = (4-ndef.groups.cracky) * (65536/tool.groupcaps.cracky.uses)
+			elseif ndef.groups.choppy and tool.groupcaps.choppy then
+				wear = (4-ndef.groups.choppy) * (65536/tool.groupcaps.choppy.uses)
+			elseif ndef.groups.crumbly and tool.groupcaps.crumbly then
+				wear = (4-ndef.groups.crumbly) * (65536/tool.groupcaps.crumbly.uses)
+			elseif ndef.groups.snappy and tool.groupcaps.snappy then
+				wear = (4-ndef.groups.snappy) * (65536/tool.groupcaps.snappy.uses)
+			else
+				return
+			end
+			
+			local breaksound = itemstack:get_definition().sound.breaks
+			itemstack:add_wear(math.ceil(wear))
+			if itemstack:get_count() == 0 and breaksound then
+				minetest.sound_play(breaksound, {pos=user:get_pos(), max_hear_distance=6, gain=0.5})
+			end
+          		return itemstack
+		end
+	)
+	
 	local maketool = infinite_use and 
 		function(name, def)
 			def.stack_max = 1
-			def.after_use = function() end
 			minetest.register_craftitem(name, def)
 		end
 	or minetest.register_tool
+	
 	if level < 1 then level = 1 end
 	local speed = optional_speed or level
 	
@@ -100,6 +132,8 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_pick = 1},
 		sound = {breaks = "default_tool_breaks"},
+		after_use = afteruse,
+		
 	})
 	
 	minetest.register_craft({
@@ -125,6 +159,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_shovel = 1},
 		sound = {breaks = "default_tool_breaks"},
+		after_use = afteruse,
 	})
 
 	minetest.register_craft({
@@ -149,6 +184,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_axe = 1},
 		sound = {breaks = "default_tool_breaks"},
+		after_use = afteruse,
 	})
 
 	minetest.register_craft({
@@ -173,6 +209,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		},
 		groups = {tooltype_sword = 1},
 		sound = {breaks = "default_tool_breaks"},
+		after_use = afteruse,
 	})
 
 	minetest.register_craft({
