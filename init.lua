@@ -263,6 +263,7 @@ instant_ores.register_metal = function(metal)
 			crackiness = 4 - metal.hardness
 		end
 	end
+	local groups = {cracky = crackiness, level=metal.hardness}
 	
 	minetest.register_craftitem(":"..metal.name.."_ingot", {
 		description = metal.description.." Ingot",
@@ -273,7 +274,7 @@ instant_ores.register_metal = function(metal)
 		description = metal.description.." Block",
 		tiles = {metal.block_image},
 		is_ground_content = false,
-		groups = {cracky = crackiness},
+		groups = table.copy(groups),
 		sounds = default.node_sound_metal_defaults(),
 	})
 	
@@ -316,7 +317,7 @@ instant_ores.register_metal = function(metal)
 		minetest.register_node(":"..name[1]..":stone_with_"..name[2], {
 			description = metal.description.." Ore",
 			tiles = {metal.ore_image},
-			groups = {cracky = crackiness},
+			groups = table.copy(groups),
 			drop = metal.name.."_lump",
 			sounds = default.node_sound_stone_defaults(),
 		})
@@ -375,6 +376,7 @@ instant_ores.register_crystal = function(crystal)
 			crackiness = 4 - crystal.hardness
 		end
 	end
+	local groups = {cracky = crackiness, level=crystal.hardness}
 	
 	minetest.register_craftitem(":"..crystal.name.."_crystal", {
 		description = crystal.description.." Crystal",
@@ -389,7 +391,7 @@ instant_ores.register_crystal = function(crystal)
 		description = crystal.description.." Block",
 		tiles = {crystal.block_image},
 		is_ground_content = false,
-		groups = {cracky = crackiness},
+		groups = table.copy(groups),
 		sounds = default.node_sound_stone_defaults(),
 	})
 	
@@ -431,7 +433,7 @@ instant_ores.register_crystal = function(crystal)
 		minetest.register_node(":"..name[1]..":stone_with_"..name[2], {
 			description = crystal.description.." Ore",
 			tiles = {crystal.ore_image},
-			groups = {cracky = crackiness},
+			groups = table.copy(groups),
 			drop = crystal.name.."_crystal",
 			sounds = default.node_sound_stone_defaults(),
 		})
