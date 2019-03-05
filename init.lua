@@ -109,6 +109,38 @@ instant_ores.register_armorset = function(
 		damage_groups = {cracky=2, snappy=3, choppy=2, crumbly=1, level=level},
 	})
 	
+	minetest.register_craft({
+		output = mod..":helmet_"..name,
+		recipe = {
+			{ingredient, ingredient, ingredient},
+			{ingredient, "", ingredient},
+			{"", "", ""},
+		},
+	})
+	minetest.register_craft({
+		output = mod..":chestplate_"..name,
+		recipe = {
+			{ingredient, "", ingredient},
+			{ingredient, ingredient, ingredient},
+			{ingredient, ingredient, ingredient},
+		},
+	})
+	minetest.register_craft({
+		output = mod..":leggings_"..name,
+		recipe = {
+			{ingredient, ingredient, ingredient},
+			{ingredient, "", ingredient},
+			{ingredient, "", ingredient},
+		},
+	})
+	minetest.register_craft({
+		output = mod..":boots_"..name,
+		recipe = {
+			{ingredient, "", ingredient},
+			{ingredient, "", ingredient},
+		},
+	})
+	
 	if not minetest.get_modpath("shields") then return end
 	armor:register_armor(":"..mod..":shield_"..name, {
 		description = desc.." Shield",
@@ -138,6 +170,15 @@ instant_ores.register_armorset = function(
 				})
 			end
 		end,
+	})
+	
+	minetest.register_craft({
+		output = mod..":shield_"..name,
+		recipe = {
+			{ingredient, ingredient, ingredient},
+			{ingredient, ingredient, ingredient},
+			{"", ingredient, ""},
+		},
 	})
 end
 
