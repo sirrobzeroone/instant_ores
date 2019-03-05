@@ -41,35 +41,146 @@ instant_ores.register_gen_ore = function(node, rarity, ymax, ymax_deep)
 	
 end
 
+instant_ores.register_armorset = function(
+	mod, 
+	name, 
+	desc, 
+	color, 
+	level, 
+	ingredient, 
+	optional_durability, 
+	infinite_use, 
+	shield_damage_sound, 
+	optional_protection, 
+	hurt_back, 
+	optional_weight)
+	if not minetest.get_modpath("3d_armor") then return end
+	local durability = optional_durability or (20*level*level*level)
+	local uses = infinite_use and 0 or (65536 / durability)
+	local weight = optional_weight or 1
+	local default_protection = 24 - 20/((level >= 1) and level or 1)
+	local big_armor = optional_protection or default_protection
+	local small_armor = (optional_protection or default_protection)*0.66
+	local sound = shield_damage_sound or "default_dig_metal"
+	--local sanity = nil
+	armor:register_armor(":"..mod..":helmet_"..name, {
+		description = desc.." Helmet",
+		inventory_image = "armor_inv_helmet.png^[colorize:"..color,
+		texture = "3d_armor_dummy_image.png^(armor_helmet.png^[colorize:"..color..")^3d_armor_dummy_image.png",
+		 -- I'm not going to try to explain how this texture hack works. Really, it shouldn't.
+		preview = "3d_armor_preview_dummy_image.png^(armor_helmet_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		groups = {armor_head=1, armor_heal=0, armor_use=uses,
+			physics_speed=-0.01*weight, physics_gravity=0.01*weight},
+		reciprocate_damage = hurt_back,
+		armor_groups = {fleshy=small_armor},
+		damage_groups = {cracky=2, snappy=3, choppy=2, crumbly=1, level=level},
+	})
+	armor:register_armor(":"..mod..":chestplate_"..name, {
+		description = desc.." Chestplate",
+		inventory_image = "armor_inv_chestplate.png^[colorize:"..color,
+		texture = "3d_armor_dummy_image.png^(armor_chestplate.png^[colorize:"..color..")^3d_armor_dummy_image.png",
+		preview = "3d_armor_preview_dummy_image.png^(armor_chestplate_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		groups = {armor_torso=1, armor_heal=0, armor_use=uses,
+			physics_speed=-0.04*weight, physics_gravity=0.04*weight},
+		reciprocate_damage = hurt_back,
+		armor_groups = {fleshy=big_armor},
+		damage_groups = {cracky=2, snappy=3, choppy=2, crumbly=1, level=level},
+	})
+	armor:register_armor(":"..mod..":leggings_"..name, {
+		description = desc.." Leggings",
+		inventory_image = "armor_inv_leggings.png^[colorize:"..color,
+		texture = "3d_armor_dummy_image.png^(armor_leggings.png^[colorize:"..color..")^3d_armor_dummy_image.png",
+		preview = "3d_armor_preview_dummy_image.png^(armor_leggings_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		groups = {armor_legs=1, armor_heal=0, armor_use=uses,
+			physics_speed=-0.03*weight, physics_gravity=0.03*weight},
+		reciprocate_damage = hurt_back,
+		armor_groups = {fleshy=big_armor},
+		damage_groups = {cracky=2, snappy=3, choppy=2, crumbly=1, level=level},
+	})
+	armor:register_armor(":"..mod..":boots_"..name, {
+		description = desc.." Boots",
+		inventory_image = "armor_inv_boots.png^[colorize:"..color,
+		texture = "3d_armor_dummy_image.png^(armor_boots.png^[colorize:"..color..")^3d_armor_dummy_image.png",
+		preview = "3d_armor_preview_dummy_image.png^(armor_boots_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		groups = {armor_feet=1, armor_heal=0, armor_use=uses,
+			physics_speed=-0.01*weight, physics_gravity=0.01*weight},
+		reciprocate_damage = hurt_back,
+		armor_groups = {fleshy=small_armor},
+		damage_groups = {cracky=2, snappy=3, choppy=2, crumbly=1, level=level},
+	})
+	
+	if not minetest.get_modpath("shields") then return end
+	armor:register_armor(":"..mod..":shield_"..name, {
+		description = desc.." Shield",
+		inventory_image = "armor_inv_shield.png^[colorize:"..color,
+		texture = "3d_armor_dummy_image.png^(armor_shield.png^[colorize:"..color..")^3d_armor_dummy_image.png",
+		preview = "3d_armor_preview_dummy_image.png^(armor_shield_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		groups = {armor_shield=1, armor_heal=0, armor_use=uses,
+			physics_speed=-0.03*weight, physics_gravity=0.03*weight},
+		armor_groups = {fleshy=small_armor},
+		damage_groups = {cracky=2, snappy=3, choppy=2, crumbly=1, level=level},
+		reciprocate_damage = hurt_back,
+		on_damage = function(player)
+			if not minetest.settings:get_bool("shields_disable_sounds") then
+				minetest.sound_play(sound, {
+					pos = player:get_pos(),
+					max_hear_distance = 10,
+					gain = 0.5,
+				})
+			end
+		end,
+		on_destroy = function(player)
+			if not minetest.settings:get_bool("shields_disable_sounds") then
+				minetest.sound_play("default_tool_breaks", {
+					pos = player:get_pos(),
+					max_hear_distance = 10,
+					gain = 0.5,
+				})
+			end
+		end,
+	})
+end
+
 instant_ores.register_toolset = function(mod, name, desc, color, level, ingredient, --[[ Parameters after this can be omitted ]] optional_durability, optional_speed, infinite_use)
-	local durability = optional_durability or (40*level)
+	local durability = optional_durability or (20*level*level*level)
 	local afteruse = infinite_use and (function() end) or (
 		function(itemstack, user, node) 
 			-- Use this hack instead of the insane default which is impossible to work with.
 			
 			local tool = itemstack:get_tool_capabilities()
 			local ndef = minetest.registered_nodes[node.name]
+			local meta = itemstack:get_meta()
+			local worn = meta:get_int("worn") or 0 
+			-- Using this hack allows tools to have more than 65535 uses, and still behave correctly.
+			local uses
 			
 			if not (ndef and tool) then return end
 			
 			local wear = 0
 			
 			if ndef.groups.cracky and tool.groupcaps.cracky then
-				wear = (4-ndef.groups.cracky) * (65536/tool.groupcaps.cracky.uses)
+				uses = tool.groupcaps.cracky.uses
+				worn = worn + (4-ndef.groups.cracky)
 			elseif ndef.groups.choppy and tool.groupcaps.choppy then
-				wear = (4-ndef.groups.choppy) * (65536/tool.groupcaps.choppy.uses)
+				uses = tool.groupcaps.choppy.uses
+				worn = worn + (4-ndef.groups.choppy)
 			elseif ndef.groups.crumbly and tool.groupcaps.crumbly then
-				wear = (4-ndef.groups.crumbly) * (65536/tool.groupcaps.crumbly.uses)
+				uses = tool.groupcaps.crumbly.uses
+				worn = worn + (4-ndef.groups.crumbly)
 			elseif ndef.groups.snappy and tool.groupcaps.snappy then
-				wear = (4-ndef.groups.snappy) * (65536/tool.groupcaps.snappy.uses)
+				uses = tool.groupcaps.snappy.uses
+				worn = worn + (4-ndef.groups.snappy)
 			else
 				return
 			end
 			
+			
 			local breaksound = itemstack:get_definition().sound.breaks
-			itemstack:add_wear(math.ceil(wear))
+			if uses then itemstack:set_wear(math.floor(worn * (65536/uses))) end
 			if itemstack:get_count() == 0 and breaksound then
 				minetest.sound_play(breaksound, {pos=user:get_pos(), max_hear_distance=6, gain=0.5})
+			else
+				meta:set_int("worn", worn)
 			end
           		return itemstack
 		end
@@ -130,7 +241,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			},
 			damage_groups = {fleshy=level+1},
 		},
-		groups = {tooltype_pick = 1},
+		groups = {pick = 1},
 		sound = {breaks = "default_tool_breaks"},
 		after_use = afteruse,
 		
@@ -157,7 +268,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			},
 			damage_groups = {fleshy=level},
 		},
-		groups = {tooltype_shovel = 1},
+		groups = {shovel = 1},
 		sound = {breaks = "default_tool_breaks"},
 		after_use = afteruse,
 	})
@@ -182,7 +293,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			},
 			damage_groups = {fleshy=level+2},
 		},
-		groups = {tooltype_axe = 1},
+		groups = {axe = 1},
 		sound = {breaks = "default_tool_breaks"},
 		after_use = afteruse,
 	})
@@ -207,7 +318,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			},
 			damage_groups = {fleshy=level+3},
 		},
-		groups = {tooltype_sword = 1},
+		groups = {sword = 1},
 		sound = {breaks = "default_tool_breaks"},
 		after_use = afteruse,
 	})
@@ -227,8 +338,8 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			inventory_image = "tool_base.png^tool_hoe_base.png^(tool_hoe.png^[colorize:"..color..")",
 			max_uses = durability,
 			material = ingredient,
-			groups = {tooltype_hoe=1},
-			after_use = infinite_use and (function() end),
+			groups = {hoe=1},
+			after_use = afteruse,
 		})
 	end
 
@@ -335,6 +446,7 @@ instant_ores.register_metal = function(metal)
 			-metal.large_depth
 		)
 	end
+	if not metal.no_tools then
 	instant_ores.register_toolset(
 		name[1],
 		name[2],
@@ -346,6 +458,21 @@ instant_ores.register_metal = function(metal)
 		metal.speed,
 		metal.infinite_uses
 	)
+	end
+	if not metal.no_armor then
+		instant_ores.register_armorset(name[1], name[2], 
+			metal.description,
+			metal.color,
+			metal.power, 
+			metal.tool_ingredient,
+			metal.armor_durability or metal.durability, -- will be calculated from power if both are nil.
+			metal.infinite_uses,
+			metal.shield_damage_sound or "default_dig_metal",
+			metal.armor_protection,
+			metal.armor_hurtback,
+			metal.armor_weight)
+	end
+		
 end
 
 instant_ores.register_crystal = function(crystal)
@@ -451,6 +578,8 @@ instant_ores.register_crystal = function(crystal)
 			-crystal.large_depth
 		)
 	end
+	
+	if not crystal.no_tools then
 	instant_ores.register_toolset(
 		name[1],
 		name[2],
@@ -462,6 +591,20 @@ instant_ores.register_crystal = function(crystal)
 		crystal.speed,
 		crystal.infinite_uses
 	)
+	end
+	
+	
+	instant_ores.register_armorset(name[1], name[2], 
+		crystal.description,
+		crystal.color,
+		crystal.power, 
+		crystal.tool_ingredient,
+		crystal.armor_durability or crystal.durability, -- will be calculated from power if both are nil.
+		crystal.infinite_uses,
+		crystal.shield_damage_sound or "default_glass_footstep",
+		crystal.armor_protection,
+		crystal.armor_hurtback,
+		crystal.armor_weight)
 end
 
 -- test-ores (WARNING: _VERY_ UNBALANCED)

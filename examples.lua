@@ -7,6 +7,7 @@ Default image structure (reference for texture pack makers):
 	crystal ore: default_stone.png + mineral_1_base.png + (mineral_1.png^[colorize:(color))
 	crystal/crystal_shard/metal_lump: (crystal/crystal_shard/metal_lump)_base.png + ((crystal/crystal_shard/metal_lump).png^[colorize:(color))
 	
+	
 	NOTE: For images that are colorized, I HIGHLY recommend sharpening the brightness/contrast, 
 	as the colorization can flatten it out quite a bit. Krita is an excelent tool for this.
 ]]
@@ -38,9 +39,17 @@ Properties shared by metal and crystal:
 	
 	infinite_uses: Tools don't break.
 	
-	durability: Approximately how durable the tools are (this doesn't seem to be 1-to-1).
+	durability: 
+		How many uses the tools have.
+		Does nothing if infinite_uses is true.
 		Will default to 40*power
-		Note: Has no effect if affter_use is set.
+		Can be over 65536, a custom after_use function handles this
+	
+	armor_durability: 
+		Durability (number of uses) of armor (if 3d_armor is present)
+		Does nothing if infinite_uses is true.
+		Will default to durability
+	
 	
 	hardness (optional): Optional reversed nodegroup cracky of the ore and block, (1 = (cracky=3), 2 = (cracky=2), 3+ = (cracky=1)). 
 		Will default to one less than power.
@@ -53,7 +62,24 @@ Properties shared by metal and crystal:
 	
 	color: Must be in format "#RRGGBB:AAA" Used to colorize images for materials/ores (if no custom sprite is given), and tools.
 	
+	no_tools: Don't register a toolset for this material.
+	
+	no_armor: If 3d_armor is present, don't register armor for this material.
+	
 	tool_ingredient (optional): Optional name of an item to be used in place of ingots/crystals in the tool recipe.
+	
+	shield_damage_sound: The sound played when the shield takes/blocks damage.
+	
+	armor_protection:
+		Fleshy armor group, defaults to 24 - 20/level
+		WARNING: If this is set to anything over 24, then a full set of armor will make the player invincible.
+		(if 3d_armor is present)
+	
+	armor_hurtback:
+		If true, armor will damage the attacker when attacked.
+	
+	armor_weight:
+		The heaviness of the armor (the same as steel, by default) will be multiplied by this.
 	
 	ore_image (optional): Optional custom sprite for the ore. Will not be automatically colorized if specified.
 	
@@ -67,6 +93,7 @@ instant_ores.register_metal({
 	rarity = 8,
 	depth = 24,
 	color = "#00C018:128",
+	no_armor = true;
 	durability = 140,
 	power = 2,
 	cooktime = 10,
@@ -87,6 +114,7 @@ instant_ores.register_crystal({
 	durability = 140,
 	power = 3,
 	speed = 2,
+	armor_weight = 0.5,
 })
 --[[
 Properties unique to crystal:

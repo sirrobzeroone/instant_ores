@@ -16,10 +16,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this mod.  If not, see <http://www.gnu.org/licenses/>.
 
-Licenses of media (textures, models and sounds)
+Licenses of media (textures)
 -----------------------------------------------
 
-All textures used by this mod are based on textures from minetest_game.
+Textures whose filenames begin with "armor_" are taken from the 3d_armor mod.
+Copyright (C) 2017-2018 davidthecreator - CC-BY-SA 3.0
+
+All other textures used by this mod are based on textures from minetest_game.
 These textures are licensed under the Creative Commons 
 Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) license.
 
