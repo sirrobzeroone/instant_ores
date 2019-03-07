@@ -66,9 +66,9 @@ instant_ores.register_armorset = function(
 	armor:register_armor(":"..mod..":helmet_"..name, {
 		description = desc.." Helmet",
 		inventory_image = "armor_inv_helmet.png^[colorize:"..color,
-		texture = "3d_armor_dummy_image.png^(armor_helmet.png^[colorize:"..color..")^3d_armor_dummy_image.png",
+		texture = "3d_armor_dummy_image.png^(armor_helmet.png^[colorize:"..color..")^3d_armor_dummy_image",
 		 -- I'm not going to try to explain how this texture hack works. Really, it shouldn't.
-		preview = "3d_armor_preview_dummy_image.png^(armor_helmet_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		preview = "3d_armor_preview_dummy_image.png^(armor_helmet_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image",
 		groups = {armor_head=1, armor_heal=0, armor_use=uses,
 			physics_speed=-0.01*weight, physics_gravity=0.01*weight},
 		reciprocate_damage = hurt_back,
@@ -78,8 +78,8 @@ instant_ores.register_armorset = function(
 	armor:register_armor(":"..mod..":chestplate_"..name, {
 		description = desc.." Chestplate",
 		inventory_image = "armor_inv_chestplate.png^[colorize:"..color,
-		texture = "3d_armor_dummy_image.png^(armor_chestplate.png^[colorize:"..color..")^3d_armor_dummy_image.png",
-		preview = "3d_armor_preview_dummy_image.png^(armor_chestplate_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		texture = "3d_armor_dummy_image.png^(armor_chestplate.png^[colorize:"..color..")^3d_armor_dummy_image",
+		preview = "3d_armor_preview_dummy_image.png^(armor_chestplate_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image",
 		groups = {armor_torso=1, armor_heal=0, armor_use=uses,
 			physics_speed=-0.04*weight, physics_gravity=0.04*weight},
 		reciprocate_damage = hurt_back,
@@ -89,8 +89,8 @@ instant_ores.register_armorset = function(
 	armor:register_armor(":"..mod..":leggings_"..name, {
 		description = desc.." Leggings",
 		inventory_image = "armor_inv_leggings.png^[colorize:"..color,
-		texture = "3d_armor_dummy_image.png^(armor_leggings.png^[colorize:"..color..")^3d_armor_dummy_image.png",
-		preview = "3d_armor_preview_dummy_image.png^(armor_leggings_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		texture = "3d_armor_dummy_image.png^(armor_leggings.png^[colorize:"..color..")^3d_armor_dummy_image",
+		preview = "3d_armor_preview_dummy_image.png^(armor_leggings_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image",
 		groups = {armor_legs=1, armor_heal=0, armor_use=uses,
 			physics_speed=-0.03*weight, physics_gravity=0.03*weight},
 		reciprocate_damage = hurt_back,
@@ -100,8 +100,8 @@ instant_ores.register_armorset = function(
 	armor:register_armor(":"..mod..":boots_"..name, {
 		description = desc.." Boots",
 		inventory_image = "armor_inv_boots.png^[colorize:"..color,
-		texture = "3d_armor_dummy_image.png^(armor_boots.png^[colorize:"..color..")^3d_armor_dummy_image.png",
-		preview = "3d_armor_preview_dummy_image.png^(armor_boots_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image.png",
+		texture = "3d_armor_dummy_image.png^(armor_boots.png^[colorize:"..color..")^3d_armor_dummy_image",
+		preview = "3d_armor_preview_dummy_image.png^(armor_boots_preview.png^[colorize:"..color..")^3d_armor_preview_dummy_image",
 		groups = {armor_feet=1, armor_heal=0, armor_use=uses,
 			physics_speed=-0.01*weight, physics_gravity=0.01*weight},
 		reciprocate_damage = hurt_back,
