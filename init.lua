@@ -182,50 +182,58 @@ instant_ores.register_armorset = function(
 	})
 end
 
+instant_ores.after_use = function(itemstack, user, node) 
+	-- Use this hack instead of the insane default which is impossible to work with.
+	
+	local tool = itemstack:get_tool_capabilities()
+	local ndef = minetest.registered_nodes[node.name]
+	local meta = itemstack:get_meta()
+	local worn = meta:get_int("worn") or 0 
+	-- Using this hack allows tools to have more than 65535 uses, and still behave correctly.
+	local uses
+	
+	if not (ndef and tool) then return end
+	
+	local wear = 0
+	
+	if ndef.groups.cracky and tool.groupcaps.cracky then
+		uses = tool.groupcaps.cracky.uses
+		wear = (4-ndef.groups.cracky)
+	elseif ndef.groups.choppy and tool.groupcaps.choppy then
+		uses = tool.groupcaps.choppy.uses
+		wear = (4-ndef.groups.choppy)
+	elseif ndef.groups.crumbly and tool.groupcaps.crumbly then
+		uses = tool.groupcaps.crumbly.uses
+		wear = (4-ndef.groups.crumbly)
+	elseif ndef.groups.snappy and tool.groupcaps.snappy then
+		uses = tool.groupcaps.snappy.uses
+		wear = (4-ndef.groups.snappy)
+	else
+		return
+	end
+	
+	if itemstack:get_wear() ~= math.floor(worn * (65536/uses)) then
+	 -- Something tried to change the wear value, adjust the true value to compensate.
+		worn = math.floor((uses*itemstack:get_wear()/65536) + 0.5)
+	end
+	
+	worn = worn + wear
+	
+	local breaksound = itemstack:get_definition().sound.breaks
+	if uses then itemstack:set_wear(math.floor(worn * (65536/uses))) end
+	if itemstack:get_count() == 0 and breaksound then
+		minetest.sound_play(breaksound, {pos=user:get_pos(), max_hear_distance=6, gain=0.5})
+	else
+		meta:set_int("worn", worn)
+	end
+	return itemstack
+end
+
+instant_ores.null_function = function() end
+
 instant_ores.register_toolset = function(mod, name, desc, color, level, ingredient, --[[ Parameters after this can be omitted ]] optional_durability, optional_speed, infinite_use)
 	local durability = optional_durability or (20*level*level*level)
-	local afteruse = infinite_use and (function() end) or (
-		function(itemstack, user, node) 
-			-- Use this hack instead of the insane default which is impossible to work with.
-			
-			local tool = itemstack:get_tool_capabilities()
-			local ndef = minetest.registered_nodes[node.name]
-			local meta = itemstack:get_meta()
-			local worn = meta:get_int("worn") or 0 
-			-- Using this hack allows tools to have more than 65535 uses, and still behave correctly.
-			local uses
-			
-			if not (ndef and tool) then return end
-			
-			local wear = 0
-			
-			if ndef.groups.cracky and tool.groupcaps.cracky then
-				uses = tool.groupcaps.cracky.uses
-				worn = worn + (4-ndef.groups.cracky)
-			elseif ndef.groups.choppy and tool.groupcaps.choppy then
-				uses = tool.groupcaps.choppy.uses
-				worn = worn + (4-ndef.groups.choppy)
-			elseif ndef.groups.crumbly and tool.groupcaps.crumbly then
-				uses = tool.groupcaps.crumbly.uses
-				worn = worn + (4-ndef.groups.crumbly)
-			elseif ndef.groups.snappy and tool.groupcaps.snappy then
-				uses = tool.groupcaps.snappy.uses
-				worn = worn + (4-ndef.groups.snappy)
-			else
-				return
-			end
-			
-			
-			local breaksound = itemstack:get_definition().sound.breaks
-			if uses then itemstack:set_wear(math.floor(worn * (65536/uses))) end
-			if itemstack:get_count() == 0 and breaksound then
-				minetest.sound_play(breaksound, {pos=user:get_pos(), max_hear_distance=6, gain=0.5})
-			else
-				meta:set_int("worn", worn)
-			end
-          		return itemstack
-		end
-	)
+	local afteruse = infinite_use and instant_ores.null_function or instant_ores.after_use
 	
 	local maketool = infinite_use and 
 		function(name, def)
