@@ -58,7 +58,7 @@ instant_ores.register_armorset = function(
 	local durability = optional_durability or (20*level*level*level)
 	local uses = infinite_use and 0 or (65536 / durability)
 	local weight = optional_weight or 1
-	local default_protection = 24 - 20/((level >= 1) and level or 1)
+	local default_protection = 24 - 20/((level >= 1) and level*level/2 or 1)
 	local big_armor = optional_protection or default_protection
 	local small_armor = (optional_protection or default_protection)*0.66
 	local sound = shield_damage_sound or "default_dig_metal"
