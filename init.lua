@@ -305,6 +305,10 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		}	
 	})
 
+	if minetest.get_modpath("pick_axe_tweaks") then
+		pick_axe_tweaks.register_pick_axes({mod..":pick_"..name})
+	end
+
 	maketool(":"..mod..":shovel_"..name, {
 		description = desc.." Shovel",
 		inventory_image = "tool_base.png^tool_shovel_base.png^(tool_shovel.png^[colorize:"..color..")",
