@@ -381,7 +381,7 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		}	
 	})
 
-	if farming then
+	if minetest.get_modpath("farming") then
 		farming.register_hoe(mod..":hoe_"..name, {
 			description = desc.." Hoe",
 			inventory_image = "tool_base.png^tool_hoe_base.png^(tool_hoe.png^[colorize:"..color..")",
