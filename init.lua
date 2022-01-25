@@ -22,7 +22,7 @@ else
 	instant_ores.node_sound_stone_defaults=function ()
 		return {}
 	end
-	minetest.log("warn","instant_ores only supports default and MineClone3. Sounds could not be found.")
+	minetest.log("warn","instant_ores only supports default and MineClone2. Sounds could not be found.")
 end
 
 instant_ores.register_gen_ore = function(node, rarity, ymax, ymax_deep)
