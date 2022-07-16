@@ -305,6 +305,10 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		}	
 	})
 
+	if minetest.get_modpath("handholds_redo") then
+		handholds.register_pick(mod..":pick_"..name,level)
+	end
+
 	maketool(":"..mod..":shovel_"..name, {
 		description = desc.." Shovel",
 		inventory_image = "tool_base.png^tool_shovel_base.png^(tool_shovel.png^[colorize:"..color..")",
