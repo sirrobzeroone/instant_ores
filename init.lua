@@ -385,6 +385,13 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		}	
 	})
 
+	if minetest.get_modpath("toolranks") then
+		toolranks.add_tool(mod..":pick_"..name)
+		toolranks.add_tool(mod..":shovel_"..name)
+		toolranks.add_tool(mod..":axe_"..name)
+		toolranks.add_tool(mod..":sword_"..name)
+	end
+
 	if farming then
 		farming.register_hoe(mod..":hoe_"..name, {
 			description = desc.." Hoe",
@@ -394,6 +401,9 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 			groups = {hoe=1},
 			after_use = afteruse,
 		})
+		if minetest.get_modpath("toolranks") then
+			toolranks.add_tool(mod..":hoe_"..name)
+		end
 	end
 
 end
