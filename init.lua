@@ -1,15 +1,42 @@
 instant_ores = {}
 
+if minetest.get_modpath("default") then
+	instant_ores.stone = "default:stone"
+	instant_ores.stick = "default:stick"
+elseif minetest.get_modpath("mcl_core") then
+	instant_ores.stone = "mcl_core:stone"
+	instant_ores.stick = "mcl_core:stick"
+else
+	minetest.log("warn","instant_ores only supports default and MineClone2. Sticks and stones could not be found.")
+end
+if minetest.get_modpath("default") then
+	instant_ores.node_sound_metal_defaults=default.node_sound_metal_defaults
+	instant_ores.node_sound_stone_defaults=default.node_sound_stone_defaults
+elseif minetest.get_modpath("mcl_sounds") then
+	instant_ores.node_sound_metal_defaults=mcl_sounds.node_sound_metal_defaults
+	instant_ores.node_sound_stone_defaults=mcl_sounds.node_sound_stone_defaults
+else
+	instant_ores.node_sound_metal_defaults=function ()
+		return {}
+	end
+	instant_ores.node_sound_stone_defaults=function ()
+		return {}
+	end
+	minetest.log("warn","instant_ores only supports default and MineClone2. Sounds could not be found.")
+end
+
 instant_ores.register_gen_ore = function(node, rarity, ymax, ymax_deep)
 	if rarity < 0 then rarity = 0 end
 	local count_large = math.ceil(48/rarity) + 1
 	local count_small = math.ceil(24/rarity) + 1
 	local dense_rarity = math.ceil(rarity * 3/4)
 	
+	if not instant_ores.stone then return end
+
 	minetest.register_ore({
 		ore_type       = "scatter",
 		ore            = node,
-		wherein        = "default:stone",
+		wherein        = instant_ores.stone,
 		clust_scarcity = dense_rarity * dense_rarity * dense_rarity,
 		clust_num_ores = count_large,
 		clust_size     = 3,
@@ -20,7 +47,7 @@ instant_ores.register_gen_ore = function(node, rarity, ymax, ymax_deep)
 	minetest.register_ore({
 		ore_type       = "scatter",
 		ore            = node,
-		wherein        = "default:stone",
+		wherein        = instant_ores.stone,
 		clust_scarcity = rarity * rarity * rarity,
 		clust_num_ores = count_small,
 		clust_size     = 3,
@@ -31,7 +58,7 @@ instant_ores.register_gen_ore = function(node, rarity, ymax, ymax_deep)
 	minetest.register_ore({
 		ore_type       = "scatter",
 		ore            = node,
-		wherein        = "default:stone",
+		wherein        = instant_ores.stone,
 		clust_scarcity = dense_rarity * dense_rarity * dense_rarity,
 		clust_num_ores = count_large,
 		clust_size     = 3,
@@ -296,14 +323,16 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		
 	})
 	
-	minetest.register_craft({
-		output = mod..":pick_"..name,
-		recipe = {
-			{ingredient, ingredient, ingredient},
-			{"","default:stick",""},
-			{"","default:stick",""}
-		}	
-	})
+	if instant_ores.stick then
+		minetest.register_craft({
+			output = mod..":pick_"..name,
+			recipe = {
+				{ingredient, ingredient, ingredient},
+				{"",instant_ores.stick,""},
+				{"",instant_ores.stick,""}
+			}	
+		})
+	end
 
 	maketool(":"..mod..":shovel_"..name, {
 		description = desc.." Shovel",
@@ -322,14 +351,16 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		after_use = afteruse,
 	})
 
-	minetest.register_craft({
-		output = mod..":shovel_"..name,
-		recipe = {
-			{ingredient},
-			{"default:stick"},
-			{"default:stick"}
-		}	
-	})
+	if instant_ores.stick then
+		minetest.register_craft({
+			output = mod..":shovel_"..name,
+			recipe = {
+				{ingredient},
+				{instant_ores.stick},
+				{instant_ores.stick}
+			}	
+		})
+	end
 
 	maketool(":"..mod..":axe_"..name, {
 		description = desc.." Axe",
@@ -347,14 +378,16 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		after_use = afteruse,
 	})
 
-	minetest.register_craft({
-		output = mod..":axe_"..name,
-		recipe = {
-			{ingredient, ingredient},
-			{ingredient,"default:stick"},
-			{"","default:stick"}
-		}	
-	})
+	if instant_ores.stick then
+		minetest.register_craft({
+			output = mod..":axe_"..name,
+			recipe = {
+				{ingredient, ingredient},
+				{ingredient,instant_ores.stick},
+				{"",instant_ores.stick}
+			}	
+		})
+	end
 
 	maketool(":"..mod..":sword_"..name, {
 		description = desc.." Sword",
@@ -372,14 +405,16 @@ instant_ores.register_toolset = function(mod, name, desc, color, level, ingredie
 		after_use = afteruse,
 	})
 
-	minetest.register_craft({
-		output = mod..":sword_"..name,
-		recipe = {
-			{ingredient},
-			{ingredient},
-			{"default:stick"}
-		}	
-	})
+	if instant_ores.stick then
+		minetest.register_craft({
+			output = mod..":sword_"..name,
+			recipe = {
+				{ingredient},
+				{ingredient},
+				{instant_ores.stick}
+			}
+		})
+	end
 
 	if minetest.get_modpath("toolranks") then
 		toolranks.add_tool(mod..":pick_"..name)
@@ -445,7 +480,7 @@ instant_ores.register_metal = function(metal)
 		tiles = {metal.block_image},
 		is_ground_content = false,
 		groups = table.copy(groups),
-		sounds = default.node_sound_metal_defaults(),
+		sounds = instant_ores.node_sound_metal_defaults(),
 	})
 	
 	local i = metal.name.."_ingot"
@@ -489,7 +524,7 @@ instant_ores.register_metal = function(metal)
 			tiles = {metal.ore_image},
 			groups = table.copy(groups),
 			drop = metal.name.."_lump",
-			sounds = default.node_sound_stone_defaults(),
+			sounds = instant_ores.node_sound_stone_defaults(),
 		})
 	
 		instant_ores.register_gen_ore(
@@ -578,7 +613,7 @@ instant_ores.register_crystal = function(crystal)
 		tiles = {crystal.block_image},
 		is_ground_content = false,
 		groups = table.copy(groups),
-		sounds = default.node_sound_stone_defaults(),
+		sounds = instant_ores.node_sound_stone_defaults(),
 	})
 	
 	local s = crystal.name.."_shard"
@@ -621,7 +656,7 @@ instant_ores.register_crystal = function(crystal)
 			tiles = {crystal.ore_image},
 			groups = table.copy(groups),
 			drop = crystal.name.."_crystal",
-			sounds = default.node_sound_stone_defaults(),
+			sounds = instant_ores.node_sound_stone_defaults(),
 		})
 	
 		instant_ores.register_gen_ore(
